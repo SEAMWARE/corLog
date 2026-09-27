@@ -6,7 +6,7 @@ A comprehensive C logging library with support for multiple message types, fine-
 - **Language:** C
 - **License:** [Apache License 2.0](LICENSE)
 
-The only dependency is **kbase**.
+The only dependency is **corBase**.
 
 ## Where it comes from
 
@@ -177,7 +177,7 @@ All logging is protected by a pthread mutex, ensuring log messages from differen
 
 ## Dependencies
 
-- [kbase](https://gitlab.com/kzangeli/kbase) - basic types and time functions
+- [corBase](https://github.com/SEAMWARE/corBase) - time functions and COR_VEC_SIZE
 - pthread library
 
 ## License

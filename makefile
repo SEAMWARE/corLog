@@ -47,7 +47,7 @@ DEPS          = $(OBJECTS:.o=.d) $(OBJDIR)/corLogTest.d
 # It stays in obj/: it is not a tool, and nothing installs it.
 #
 TEST          = $(OBJDIR)/corLogTest
-TEST_LIBS     = ../kbase/libkbase.a -lpthread
+TEST_LIBS     = ../corBase/libcorBase.a -lpthread
 
 all: $(LIB) $(LIB_SO) $(TEST)
 

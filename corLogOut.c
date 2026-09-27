@@ -17,7 +17,7 @@
 #include <stdlib.h>                           // exit
 #include <stdbool.h>                          // bool
 
-#include "kbase/kTime.h"                      // kTimeGet, kTimeDiff
+#include "corBase/corTime.h"                  // corTimeGet, corTimeDiff
 #include "corLog/corLogGlobals.h"             // corLogFt, corLogSem, ...
 #include "corLog/corLogTraceLevelCheck.h"     // corLogTraceLevelCheck
 #include "corLog/corLogOut.h"                 // Own interface
@@ -101,8 +101,8 @@ void corLogOut
   struct timespec now;
   struct timespec diff;
 
-  kTimeGet(&now);
-  kTimeDiff(&corLogStartTime, &now, &diff, NULL);
+  corTimeGet(&now);
+  corTimeDiff(&corLogStartTime, &now, &diff, NULL);
   timestampLen = snprintf(timestamp, sizeof(timestamp) - 1, "%06d.%03d", (int) diff.tv_sec, (int) (diff.tv_nsec / 1000000));
 
   int           comps    = 13;

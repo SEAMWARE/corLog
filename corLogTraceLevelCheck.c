@@ -8,7 +8,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 #include <stdbool.h>                          // bool
-#include "kbase/kMacros.h"                    // K_VEC_SIZE
+#include "corBase/corMacros.h"                // COR_VEC_SIZE
 
 #include "corLog/corLogGlobals.h"             // corLogTraceLevels
 #include "corLog/corLogTraceLevelCheck.h"     // Own interface
@@ -23,7 +23,7 @@ bool corLogTraceLevelCheck(unsigned int level)
 {
   unsigned int index = level / 32;
 
-  if (index >= K_VEC_SIZE(corLogTraceLevels))
+  if (index >= COR_VEC_SIZE(corLogTraceLevels))
     return false;
 
   level = level % 32;
