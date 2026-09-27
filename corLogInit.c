@@ -17,8 +17,8 @@
 #include <pthread.h>                          // pthread_mutex_init
 #include <stdbool.h>                          // bool
 
-#include "kbase/kMacros.h"                    // K_VEC_SIZE
-#include "kbase/kTime.h"                      // kTimeGet
+#include "corBase/corMacros.h"                // COR_VEC_SIZE
+#include "corBase/corTime.h"                  // corTimeGet
 
 #include "corLog/corLogGlobals.h"             // corLogFd, corLogToStdout, corLogSem, corLogStartTime
 #include "corLog/corLogTraceLevelSet.h"       // corLogTraceLevelSet
@@ -63,7 +63,7 @@ int corLogInit(const char* progName, const char* logDir, bool logToScreen, const
   pthread_mutex_init(&corLogMutex, NULL);
 
   // Record the start-time, for future diffs for the timestamps
-  kTimeGet(&corLogStartTime);
+  corTimeGet(&corLogStartTime);
 
   // Print logs to screen?
   corLogToScreen = logToScreen;
@@ -78,7 +78,7 @@ int corLogInit(const char* progName, const char* logDir, bool logToScreen, const
     const char* levelStrings[] = { "CERO", "ERR", "WARN", "INFO", "VERBOSE", "TRACE", "DEBUG" };
     int         levels[]       = {   0,      1,     2,       3,       4,        5,        6   };
 
-    for (unsigned int ix = 1; ix < K_VEC_SIZE(levelStrings); ix++)
+    for (unsigned int ix = 1; ix < COR_VEC_SIZE(levelStrings); ix++)
     {
       if (strcmp(logLevel, levelStrings[ix]) == 0)
       {
