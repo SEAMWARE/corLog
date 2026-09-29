@@ -61,7 +61,17 @@ static inline bool corLogTraceOn(unsigned int level)
 
 #define COR_F(...)           COR_LOG_IF(corLogFixme   == true,  'F', -1,     __VA_ARGS__)
 #define COR_D(...)           COR_LOG_IF(corLogDebug   == true,  'D', -1,     __VA_ARGS__)
+//
+// COR_T exists in a build that defines COR_T_ON (a debug build) and nowhere else. Without it a trace
+// is compiled away - no code, no string, no load and branch - but it stays an expression whose
+// arguments are type-checked and count as used: a variable only a trace reads compiles in a
+// release build (-Werror), and a broken trace fails the release build too, not only the debug one.
+//
+#ifdef COR_T_ON
 #define COR_T(tLevel, ...)   COR_LOG_IF(corLogTraceOn(tLevel),  'T', tLevel, __VA_ARGS__)
+#else
+#define COR_T(tLevel, ...)   COR_LOG_IF(0,                      'T', tLevel, __VA_ARGS__)
+#endif
 #define COR_V(...)           COR_LOG_IF(corLogVerbose == true,  'V', -1,     __VA_ARGS__)
 #define COR_I(...)           COR_LOG_IF(corLogInfo    == true,  'I', -1,     __VA_ARGS__)
 #define COR_W(...)           corLogOut(__FILE__, __LINE__, __FUNCTION__, 'W', -1,     __VA_ARGS__)
