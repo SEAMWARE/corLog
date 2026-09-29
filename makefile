@@ -38,6 +38,13 @@ LIB_SOURCES   = corLogInit.c               \
                 corLogVersion.c
 
 BUILD        ?= debug
+
+#
+# Traces (COR_T) are compiled in for a debug build only - see corLog.h.
+#
+ifeq ($(BUILD),debug)
+CFLAGS       += -DCOR_T_ON
+endif
 OBJDIR        = obj/$(BUILD)
 OBJECTS       = $(LIB_SOURCES:%.c=$(OBJDIR)/%.o)
 DEPS          = $(OBJECTS:.o=.d) $(OBJDIR)/corLogTest.d
