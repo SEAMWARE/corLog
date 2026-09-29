@@ -35,11 +35,35 @@
 // COR_RE  - error + return a value
 // COR_RVE - error + return from a void function
 //
-#define COR_F(...)           corLogOut(__FILE__, __LINE__, __FUNCTION__, 'F', -1,     __VA_ARGS__)
-#define COR_D(...)           corLogOut(__FILE__, __LINE__, __FUNCTION__, 'D', -1,     __VA_ARGS__)
-#define COR_T(tLevel, ...)   corLogOut(__FILE__, __LINE__, __FUNCTION__, 'T', tLevel, __VA_ARGS__)
-#define COR_V(...)           corLogOut(__FILE__, __LINE__, __FUNCTION__, 'V', -1,     __VA_ARGS__)
-#define COR_I(...)           corLogOut(__FILE__, __LINE__, __FUNCTION__, 'I', -1,     __VA_ARGS__)
+//
+// The macros test the level INLINE and call corLogOut only when the line is to be written.
+//
+// corLogOut makes the same test, but a call that ends in its early return still costs the call:
+// a variadic one, whose argument set-up and register spill is paid in full - and the ARGUMENTS
+// are evaluated before it, strlen()s included. Traces sit in per-node loops (the JSON parser,
+// corTreeFree), where that was 7.6% of all instructions of a batch create with tracing OFF.
+// Behind the test, a trace that is off costs a load and a branch, and its arguments are never
+// evaluated.
+//
+// Expressions, not do-while: a macro used as an expression keeps compiling.
+//
+static inline bool corLogTraceOn(unsigned int level)
+{
+  unsigned int index = level / 32;
+
+  if ((corLogInitDone == false) || (index >= sizeof(corLogTraceLevels) / sizeof(corLogTraceLevels[0])))
+    return false;
+
+  return (corLogTraceLevels[index] & (1U << (level % 32))) != 0;
+}
+
+#define COR_LOG_IF(on, type, aux, ...)  ((on) ? corLogOut(__FILE__, __LINE__, __FUNCTION__, type, aux, __VA_ARGS__) : (void) 0)
+
+#define COR_F(...)           COR_LOG_IF(corLogFixme   == true,  'F', -1,     __VA_ARGS__)
+#define COR_D(...)           COR_LOG_IF(corLogDebug   == true,  'D', -1,     __VA_ARGS__)
+#define COR_T(tLevel, ...)   COR_LOG_IF(corLogTraceOn(tLevel),  'T', tLevel, __VA_ARGS__)
+#define COR_V(...)           COR_LOG_IF(corLogVerbose == true,  'V', -1,     __VA_ARGS__)
+#define COR_I(...)           COR_LOG_IF(corLogInfo    == true,  'I', -1,     __VA_ARGS__)
 #define COR_W(...)           corLogOut(__FILE__, __LINE__, __FUNCTION__, 'W', -1,     __VA_ARGS__)
 #define COR_E(...)           corLogOut(__FILE__, __LINE__, __FUNCTION__, 'E', -1,     __VA_ARGS__)
 #define COR_X(eCode, ...)    corLogOut(__FILE__, __LINE__, __FUNCTION__, 'X', eCode,  __VA_ARGS__)
