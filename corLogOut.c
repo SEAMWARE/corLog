@@ -7,7 +7,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-#include <stdio.h>                            // snprintf, vsnprintf
+#include <stdio.h>                            // snprintf, vsnprintf, fprintf, vfprintf
 #include <stdlib.h>                           // malloc, free
 #include <string.h>                           // strlen, strncpy
 #include <stdarg.h>                           // va_start, va_end
@@ -45,7 +45,25 @@ void corLogOut
   // Should the trace message be printed?
   // If not, just return
   //
-  if (corLogInitDone == false)                                    return;
+  if (corLogInitDone == false)
+  {
+    //
+    // No log yet - an X still EXITS. It returned here, before its exit(), and a broker that met an
+    // error in its command line before corLogInit (corArgsParse: a value out of range) started
+    // anyway. Its message goes to stderr, the only place there is.
+    //
+    if (type == 'X')
+    {
+      va_start(ap, format);
+      fprintf(stderr, "X: ");
+      vfprintf(stderr, format, ap);
+      fprintf(stderr, "\n");
+      va_end(ap);
+      exit(aux);
+    }
+
+    return;
+  }
   if ((type == 'T')  && (corLogTraceLevelCheck(aux) == false))    return;
   if ((type == 'D')  && (corLogDebug                == false))    return;
   if ((type == 'V')  && (corLogVerbose              == false))    return;
