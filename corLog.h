@@ -67,8 +67,13 @@ static inline bool corLogTraceOn(unsigned int level)
 // arguments are type-checked and count as used: a variable only a trace reads compiles in a
 // release build (-Werror), and a broken trace fails the release build too, not only the debug one.
 //
+// Every object compiled with COR_T_ON carries the string "COR_T_ON:traces-compiled-in" (here and in
+// corBase/corLibLog.h), so a binary or an archive says whether it holds debug code: a release build
+// must not, and coraine's makefile fails a release link that does.
+//
 #ifdef COR_T_ON
 #define COR_T(tLevel, ...)   COR_LOG_IF(corLogTraceOn(tLevel),  'T', tLevel, __VA_ARGS__)
+static const char corLogTracesCompiledIn[] __attribute__((used)) = "COR_T_ON:traces-compiled-in";
 #else
 #define COR_T(tLevel, ...)   COR_LOG_IF(0,                      'T', tLevel, __VA_ARGS__)
 #endif
