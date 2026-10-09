@@ -25,8 +25,8 @@ void corLogTraceLevelSetOne(int level)
   if (index >= COR_VEC_SIZE(corLogTraceLevels))
     return;
 
-  level = level % 64;
-  unsigned int mask = 1 << level;
+  level = level % 32;
+  unsigned int mask = 1U << level;
 
   corLogTraceLevels[index] |= mask;
 }
