@@ -28,7 +28,7 @@ bool corLogTraceLevelCheck(unsigned int level)
 
   level = level % 32;
 
-  unsigned int mask = 1 << level;
+  unsigned int mask = 1U << level;
 
   if ((mask & corLogTraceLevels[index]) == 0)
     return false;

@@ -20,7 +20,7 @@
 //
 static inline int corLogTraceIsSet(int level)
 {
-  return (corLogTraceLevels[level / 32] & (1 << (level % 32))) != 0;
+  return (corLogTraceLevels[level / 32] & (1U << (level % 32))) != 0;
 }
 
 
