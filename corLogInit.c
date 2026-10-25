@@ -48,7 +48,12 @@ int corLogInit(const char* progName, const char* logDir, bool logToScreen, const
       rename(path, oldPath);
     }
 
-    corLogFd = open(path, O_RDWR | O_TRUNC | O_CREAT, 0664);
+    //
+    // O_APPEND: every write lands at the end of the file as it is NOW - so a file truncated under
+    // the process (logrotate's copytruncate) is written from its new start, not from the old offset
+    // with a hole of zero bytes in front.
+    //
+    corLogFd = open(path, O_WRONLY | O_APPEND | O_TRUNC | O_CREAT, 0664);
     if (corLogFd < 0)
     {
       fprintf(stderr, "Unable to open '%s' for writing: %s\n", path, strerror(errno));
