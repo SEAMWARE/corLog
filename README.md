@@ -16,13 +16,14 @@ the name klog was taken; in the coraine stack it is the log, so it is called tha
 
 The renames: `KT_E`/`KT_W`/`KT_T`/... → `COR_E`/`COR_W`/`COR_T`/..., `ktInit` →
 `corLogInit`, `ktOut` → `corLogOut`, `ktTraceLevelSet` → `corLogTraceLevelSet` (and
-the rest of `ktTraceLevel*`), the globals `ktVerbose`/`ktDebug`/... →
-`corLogVerbose`/`corLogDebug`/.... A trace level is still a *trace* level — it is
+the rest of `ktTraceLevel*`), the globals `ktVerbose`/... →
+`corLogVerbose`/.... `ktDebug` and `KT_D` have no counterpart: the trace levels show what
+they did. A trace level is still a *trace* level — it is
 not a log level, and the names say so. `KBool` became `bool`.
 
 ## Features
 
-- **Multiple message types** - Debug, trace, verbose, info, warning, error, fatal
+- **Multiple message types** - Trace, verbose, info, warning, error, fatal
 - **Fine-grained trace levels** - Up to 3200 individual trace levels
 - **Thread-safe** - Mutex-protected output for multi-threaded applications
 - **Flexible output** - Log to file, stdout, or both simultaneously
@@ -40,10 +41,9 @@ int corLogInit(
     const char* progName,    // Program name (used for log filename)
     const char* logDir,      // Log directory (NULL for stdout only)
     bool       logToScreen, // Echo to stdout in addition to file
-    const char* logLevel,    // "ERR", "WARN", "INFO", "VERBOSE", "TRACE", "DEBUG"
+    const char* logLevel,    // "ERR", "WARN", "INFO", "VERBOSE", "TRACE"
     const char* traceLevels, // Trace levels: "5,10,15-20,100"
     bool       verbose,     // Enable verbose output
-    bool       debug,       // Enable debug output
     bool       fixme        // Enable FIXME markers
 );
 ```
@@ -61,7 +61,6 @@ bool corLogTraceLevelCheck(unsigned int level);    // Check if enabled
 ### Logging Macros
 
 ```c
-COR_D(fmt, ...)             // Debug (temporary, to be removed)
 COR_T(level, fmt, ...)      // Trace with level
 COR_V(fmt, ...)             // Verbose
 COR_I(fmt, ...)             // Info
@@ -167,7 +166,6 @@ Use trace levels to control verbosity for different subsystems:
 ```c
 extern bool corLogInfo;      // Info messages enabled
 extern bool corLogVerbose;   // Verbose messages enabled
-extern bool corLogDebug;     // Debug messages enabled
 extern bool corLogFixme;     // FIXME messages enabled
 ```
 

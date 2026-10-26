@@ -24,7 +24,6 @@
 //
 // corLog Macros
 //
-// COR_D  - debug messages,   depending on the variable 'corLogDebug' - these are temporary, to be removed before PR
 // COR_T  - trace messages,   depending on the trace level 'tLevel'
 // COR_V  - verbose messages, depending on the variable 'corLogVerbose'
 // COR_I  - info messages,    depending on the variable 'corLogInfo'
@@ -60,7 +59,6 @@ static inline bool corLogTraceOn(unsigned int level)
 #define COR_LOG_IF(on, type, aux, ...)  ((on) ? corLogOut(__FILE__, __LINE__, __FUNCTION__, type, aux, __VA_ARGS__) : (void) 0)
 
 #define COR_F(...)           COR_LOG_IF(corLogFixme   == true,  'F', -1,     __VA_ARGS__)
-#define COR_D(...)           COR_LOG_IF(corLogDebug   == true,  'D', -1,     __VA_ARGS__)
 //
 // COR_T exists in a build that defines COR_T_ON (a debug build) and nowhere else. Without it a trace
 // is compiled away - no code, no string, no load and branch - but it stays an expression whose

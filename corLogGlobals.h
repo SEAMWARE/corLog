@@ -28,7 +28,6 @@ extern bool                corLogInfo;
 extern bool                corLogMsg;
 extern bool                corLogVerbose;
 extern unsigned int        corLogTraceLevels[100];  // 3200 trace levels
-extern bool                corLogDebug;
 extern bool                corLogFixme;
 extern bool                corLogInitDone;
 

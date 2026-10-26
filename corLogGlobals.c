@@ -26,6 +26,5 @@ pthread_mutex_t     corLogMutex    = PTHREAD_MUTEX_INITIALIZER;
 bool                corLogInfo;
 bool                corLogVerbose;
 unsigned int        corLogTraceLevels[100];  // 3200 trace levels
-bool                corLogDebug;
 bool                corLogFixme;
 bool                corLogInitDone = false;

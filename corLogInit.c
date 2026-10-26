@@ -30,7 +30,7 @@
 //
 // corLogInit -
 //
-int corLogInit(const char* progName, const char* logDir, bool logToScreen, const char* logLevel, const char* traceLevels, bool verbose, bool debug, bool fixme)
+int corLogInit(const char* progName, const char* logDir, bool logToScreen, const char* logLevel, const char* traceLevels, bool verbose, bool fixme)
 {
   //
   // logDir == NULL means traces only to stdout
@@ -80,8 +80,8 @@ int corLogInit(const char* progName, const char* logDir, bool logToScreen, const
   int level = -1;
   if (logLevel != NULL)
   {
-    const char* levelStrings[] = { "CERO", "ERR", "WARN", "INFO", "VERBOSE", "TRACE", "DEBUG" };
-    int         levels[]       = {   0,      1,     2,       3,       4,        5,        6   };
+    const char* levelStrings[] = { "CERO", "ERR", "WARN", "INFO", "VERBOSE", "TRACE" };
+    int         levels[]       = {   0,      1,     2,       3,       4,        5   };
 
     for (unsigned int ix = 1; ix < COR_VEC_SIZE(levelStrings); ix++)
     {
@@ -105,7 +105,6 @@ int corLogInit(const char* progName, const char* logDir, bool logToScreen, const
 
   corLogInfo    = (level >= 3)? true : false;
   corLogVerbose = ((level >= 4) || (verbose == true))? true : false;
-  corLogDebug   = ((level >= 6) || (debug == true))?   true : false;
 
   if (traceLevels != NULL)
     corLogTraceLevelSet(traceLevels, true);
