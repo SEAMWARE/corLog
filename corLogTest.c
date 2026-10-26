@@ -19,14 +19,12 @@
 //
 int main(int argC, char* argV[])
 {
-  corLogInit("corLogTest", "/tmp", true, "DEBUG", (argC > 1)? argV[1] : NULL, true, true, true);
+  corLogInit("corLogTest", "/tmp", true, "TRACE", (argC > 1)? argV[1] : NULL, true, true);
 
   usleep(5000);
   COR_T(5, "This is a trace level message");
   COR_T(19, "This is a trace level message");
   COR_T(3100, "This is a trace level message");
-  usleep(5000);
-  COR_D("This is a %s message", "debug");
   usleep(5000);
   COR_V("This is a %s message", "verbose");
   usleep(5000);

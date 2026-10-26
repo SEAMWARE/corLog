@@ -65,7 +65,6 @@ void corLogOut
     return;
   }
   if ((type == 'T')  && (corLogTraceLevelCheck(aux) == false))    return;
-  if ((type == 'D')  && (corLogDebug                == false))    return;
   if ((type == 'V')  && (corLogVerbose              == false))    return;
   if ((type == 'F')  && (corLogFixme                == false))    return;
   if ((type == 'I')  && (corLogInfo                 == false))    return;

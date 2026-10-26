@@ -18,6 +18,6 @@
 //
 // corLogInit -
 //
-extern int corLogInit(const char* progName, const char* logDir, bool logToScreen, const char* logLevel, const char* traceLevels, bool verbose, bool debug, bool fixme);
+extern int corLogInit(const char* progName, const char* logDir, bool logToScreen, const char* logLevel, const char* traceLevels, bool verbose, bool fixme);
 
 #endif  // CORLOG_CORLOGINIT_H_
