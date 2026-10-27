@@ -27,7 +27,7 @@ not a log level, and the names say so. `KBool` became `bool`.
 - **Fine-grained trace levels** - Up to 3200 individual trace levels
 - **Thread-safe** - Mutex-protected output for multi-threaded applications
 - **Flexible output** - Log to file, stdout, or both simultaneously
-- **Timestamped** - Microsecond precision relative to initialization
+- **Timestamped** - seconds and milliseconds since `corLogInit` (`000012.345`)
 - **Context-aware** - Automatically captures file, line, and function name
 
 ## API Reference
@@ -50,18 +50,28 @@ int corLogInit(
 
 Initializes the logging system. Creates `<logDir>/<progName>.log`, backing up existing logs to `.old`.
 
+- `logLevel` sets only Info and Verbose: `INFO` turns Info on, `VERBOSE` and `TRACE` turn both on.
+  Warnings, errors and fatal errors are always written. `NULL` leaves Info and Verbose off; an
+  unknown name makes `corLogInit` return -1.
+- A non-NULL `traceLevels` turns Info and Verbose on, whatever `logLevel` says, and sets those levels.
+- `verbose` turns Verbose on.
+- Before `corLogInit` nothing is written, except `COR_X`: its message goes to stderr, and it exits.
+
 ### Trace Level Configuration
 
 ```c
-void corLogTraceLevelSet(const char* levelString);  // "5,10,15-20"
-void corLogTraceLevelSetOne(int level);         // Single level (0-3199)
-bool corLogTraceLevelCheck(unsigned int level);    // Check if enabled
+void        corLogTraceLevelSet(const char* levelString, bool replace);  // "5,10,15-20"; replace: clear all first
+void        corLogTraceLevelSetOne(int level);                           // Single level (0-3199)
+void        corLogTraceLevelReset(const char* levelString);              // Turn levels off: "5,10,15-20"
+void        corLogTraceLevelResetOne(int level);                         // Turn one level off
+bool        corLogTraceLevelCheck(unsigned int level);                   // Check if enabled
+const char* corLogTraceLevelGet(void);                                   // The levels on, as "5,10-45,101" - static, not to be freed
 ```
 
 ### Logging Macros
 
 ```c
-COR_T(level, fmt, ...)      // Trace with level
+COR_T(level, fmt, ...)      // Trace with level - compiled in only with -DCOR_T_ON (a debug build)
 COR_V(fmt, ...)             // Verbose
 COR_I(fmt, ...)             // Info
 COR_W(fmt, ...)             // Warning
@@ -83,7 +93,7 @@ COR_RVE(fmt, ...)           // Error, then return void
 Example:
 ```
 E: 000012.345: main.c[42]: processRequest: Connection refused
-T: 000012.346: parser.c[100]: parse: entering parse loop (5)
+T: 000012.346: parser.c[100]: parse: entering parse loop (T-5)
 ```
 
 ## Building
@@ -106,7 +116,7 @@ make clean    # remove build artifacts
 int main(int argc, char* argv[])
 {
     // Initialize: log to /tmp/myapp.log and stdout, enable trace levels 5,10
-    corLogInit("myapp", "/tmp", true, "TRACE", "5,10", true, false, false);
+    corLogInit("myapp", "/tmp", true, "TRACE", "5,10", true, false);
 
     COR_I("Application started");
     COR_V("Verbose startup info");
@@ -130,8 +140,8 @@ int main(int argc, char* argv[])
 ```
 I: 000000.001: main.c[12]: main: Application started
 V: 000000.001: main.c[13]: main: Verbose startup info
-T: 000000.002: main.c[15]: main: Parsing configuration (5)
-T: 000000.002: main.c[16]: main: Connecting to server (10)
+T: 000000.002: main.c[15]: main: Parsing configuration (T-5)
+T: 000000.002: main.c[16]: main: Connecting to server (T-10)
 I: 000000.050: main.c[24]: main: Application finished
 ```
 
@@ -141,13 +151,13 @@ Trace levels allow fine-grained control over which messages appear:
 
 ```c
 // Enable individual levels
-corLogTraceLevelSet("5,10,100");
+corLogTraceLevelSet("5,10,100", false);
 
 // Enable ranges
-corLogTraceLevelSet("15-20");
+corLogTraceLevelSet("15-20", false);
 
 // Combine both
-corLogTraceLevelSet("5,10,15-20,100-150");
+corLogTraceLevelSet("5,10,15-20,100-150", false);
 ```
 
 Use trace levels to control verbosity for different subsystems:
