@@ -7,7 +7,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 #
-# corLog - logging and tracing: error, warning, info, verbose and debug messages,
+# corLog - logging and tracing: error, warning, info, verbose and FIXME messages,
 # and up to 3200 numbered trace levels, written to a file and/or stdout, one
 # lock around each line so threads never interleave.
 #
